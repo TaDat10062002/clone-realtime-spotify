@@ -10,10 +10,17 @@ import statRoutes from './routes/stat.route.js';
 import { connectDB } from "./lib/db.js";
 import fileUpload from "express-fileupload";
 import path from "path"
+import cors from "cors";
+
 config();
 const app = express();
 const PORT = process.env.PORT;
 const MONGDB_URI = process.env.MONGDB_URI;
+
+app.use(cors({
+    origin: "http://localhost:3000",
+    credentials: true
+}));
 
 // get body from req
 app.use(express.json());
