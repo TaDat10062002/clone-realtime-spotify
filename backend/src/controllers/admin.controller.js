@@ -39,8 +39,6 @@ export const createSong = async (req, res, next) => {
             albumId: albumId || null
         })
 
-        console.log(song)
-
         await song.save();
 
         // if song belongs to an album, update the album song array 
