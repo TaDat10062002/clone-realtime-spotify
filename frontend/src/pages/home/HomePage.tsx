@@ -4,15 +4,25 @@ import { useEffect } from "react";
 import FeaturedSection from "./components/FeaturedSection";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import SectionGrid from "./components/SectionGrid";
+import { usePlayStore } from "@/stores/usePlayerStore";
 
 const HomePage = () => {
   const { fetchFeaturedSongs, fetchMadeForYouSongs, fetchTrendingSongs, isLoading, featuredSongs, madeForYouSongs, trendingSongs, } = useMusicStore();
 
+  const { initializeQueue } = usePlayStore();
   useEffect(() => {
     fetchFeaturedSongs(),
       fetchMadeForYouSongs(),
       fetchTrendingSongs()
   }, [fetchFeaturedSongs, fetchMadeForYouSongs, fetchTrendingSongs])
+
+
+  useEffect(() => {
+    if (madeForYouSongs.length > 0 && featuredSongs.length > 0 && trendingSongs.length > 0) {
+      const allSongs = [...madeForYouSongs, ...featuredSongs, ...trendingSongs];
+      initializeQueue(allSongs);
+    }
+  }, [initializeQueue, madeForYouSongs, featuredSongs, trendingSongs]);
   if (isLoading) return null;
 
   return (
