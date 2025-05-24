@@ -12,29 +12,32 @@ export const getStats = async (req, res, next) => {
             Song.countDocuments(),
             User.countDocuments(),
             Album.countDocuments(),
+
+            // total Artist
+            Song.aggregate([
+                {
+                    $unionWith: {
+                        coll: "albums",
+                        pipeline: []
+                    }
+                },
+                {
+                    $group: {
+                        _id: "$artist"
+                    }
+                },
+                {
+                    $count: "count"
+                }
+            ])
         ])
 
-        Song.aggregate([
-            {
-                $unionWith: {
-                    coll: "albums",
-                    pipeline: []
-                }
-            },
-            {
-                $group: {
-                    _id: "$artist"
-                }
-            },
-            {
-                $count: "count"
-            }
-        ])
+
         res.status(200).json({
             totalSongs,
             totalUsers,
             totalAlbums,
-            totalArtist: uniqueArtists[0]?.count || 0
+            totalArtists: uniqueArtists[0]?.count || 0
         })
     } catch (error) {
         console.log(`Error getStatic in controller ${error}`);

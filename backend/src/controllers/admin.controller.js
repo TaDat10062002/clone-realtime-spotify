@@ -1,7 +1,6 @@
 import Song from "../models/song.model.js";
 import Album from "../models/album.model.js"
 import cloudinary from "../lib/cloudinary.js"
-import { json } from "express";
 
 export const uploadToCloudinary = async (file) => {
     try {
@@ -33,8 +32,8 @@ export const createSong = async (req, res, next) => {
         const song = new Song({
             title,
             artist,
-            audioUrl,
-            imageUrl,
+            audioUrl: audioUrl.secure_url,
+            imageUrl: imageUrl.secure_url,
             duration,
             albumId: albumId || null
         })
@@ -101,7 +100,7 @@ export const createAlbum = async (req, res, next) => {
             title,
             artist,
             releaseYear,
-            imageUrl,
+            imageUrl: imageUrl.secure_url,
         })
 
         await album.save();
@@ -115,8 +114,8 @@ export const createAlbum = async (req, res, next) => {
 }
 
 export const deleteAlbum = async (req, res, next) => {
+    const { id } = req.params;
     try {
-        const { id } = req.params;
         // delete all song in this album
         await Song.deleteMany({ albumId: id });
         // then delete this album
